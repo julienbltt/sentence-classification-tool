@@ -1,6 +1,6 @@
 # Question Classification Tool
 
-This tool provides real-time classification of natural language questions for seamless integration into the **Commpanion** project. It uses [Sentence-BERT](https://www.sbert.net/) to semantically match user input to pre-defined intent categories.
+This tool provides real-time classification of natural language questions for seamless integration into the [**Commpanion Blind**](https://github.com/julienbltt/commpanion-blind) project. It uses [Sentence-BERT](https://www.sbert.net/) to semantically match user input to pre-defined intent categories.
 
 ---
 
