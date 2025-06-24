@@ -83,7 +83,7 @@ Predicted Intent: read_text (confidence=0.53)
 
 ## How does it work
 
-1) Input text is embedded using SBERT (`all-distilroberta-v1`).
+1) Input text is embedded using SBERT (`all-MiniLM-L12-v2`).
 2) Each intent category has a pre-computed mean embedding from its example templates.
 3)  The tool computes cosine similarity between the input and each intent category.
 4) The most similar intent is returned along with a confidence score.
