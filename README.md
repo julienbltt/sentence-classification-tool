@@ -6,7 +6,7 @@ This tool provides real-time classification of natural language questions for se
 
 ## Features
 
-- Classifies questions into intent categories using SBERT (`all-distilroberta-v1`)
+- Classifies questions into intent categories using SBERT (`all-MiniLM-L12-v2`)
 - Fast and lightweight for real-time interaction
 - Easily extendable with additional categories
 - Built-in CLI for quick testing
