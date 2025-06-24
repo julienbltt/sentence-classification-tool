@@ -93,6 +93,6 @@ Predicted Intent: read_text (confidence=0.53)
 Evaluated on a dataset of 100 samples per category (300 total):
 | Model                | Accuracy | Avg Time (ms) |
 | -------------------- | -------- | ------------- |
-| all-distilroberta-v1 | 99.67%   | 19.47         |
+| all-MiniLM-L12-v2 | 95.04%   | 37.12         |
 
 The classifier demonstrates high accuracy and low inference latency, making it suitable for real-time systems
