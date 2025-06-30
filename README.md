@@ -6,7 +6,7 @@ This tool provides real-time classification of natural language questions for se
 
 ## Features
 
-- Classifies questions into intent categories using SBERT (`all-distilroberta-v1`)
+- Classifies questions into intent categories using SBERT (`all-MiniLM-L12-v2`)
 - Fast and lightweight for real-time interaction
 - Easily extendable with additional categories
 - Built-in CLI for quick testing
@@ -91,7 +91,7 @@ Predicted Intent: read_text (confidence=0.53)
 
 ## How does it work
 
-1) Input text is embedded using SBERT (`all-distilroberta-v1`).
+1) Input text is embedded using SBERT (`all-MiniLM-L12-v2`).
 2) Each intent category has a pre-computed mean embedding from its example templates.
 3) The tool computes cosine similarity between the input and each intent category.
 4) The most similar intent is returned along with a confidence score.
@@ -101,6 +101,6 @@ Predicted Intent: read_text (confidence=0.53)
 Evaluated on a dataset of 100 samples per category (300 total):
 | Model                | Accuracy | Avg Time (ms) |
 | -------------------- | -------- | ------------- |
-| all-distilroberta-v1 | 99.67%   | 19.47         |
+| all-MiniLM-L12-v2 | 95.04%   | 37.12         |
 
 The classifier demonstrates high accuracy and low inference latency, making it suitable for real-time systems
