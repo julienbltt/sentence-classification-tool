@@ -1,4 +1,4 @@
-# Question Classification Tool
+# Sentence Classification Tool
 
 This tool provides real-time classification of natural language questions for seamless integration into the [**Commpanion Blind**](https://github.com/julienbltt/commpanion-blind) project. It uses [Sentence-BERT](https://www.sbert.net/) to semantically match user input to pre-defined intent categories.
 
@@ -19,31 +19,39 @@ Currently supports classification into the following categories:
 
 ### `read_text`
 Example prompts:
-- "tell me what does it say"
-- "read the text"
-- "can you read this"
-- "what's written here"
-- "what is written on this menu"
-- "Read the instructions for me"
-- "tell me the words on the sign"
+- "Can you read aloud what’s written here?"
+- "Please read the text shown on the screen."
+- "What does the writing say on that sign?"
+- "Tell me exactly what the label says."
+- "Could you read the message displayed in front of me?"
+- "What are the words written on this surface?"
 
 ### `describe_scene`
 Example prompts:
-- "what do you see"
-- "can you explain me what's around me"
-- "describe me the scene"
-- "what's happening here"
-- "can you tell me what is in front of me"
-- "describe the surroundings"
+- "Can you describe what’s happening around me?"
+- "What do you see in this area?"
+- "Give me a detailed description of the scene."
+- "Describe the setting and objects nearby."
+- "Tell me what the surroundings look like."
+- "What’s visible in the current environment?"
 
 ### `activate_detection_collision`
 Example prompts:
-- "Turn on the collision detector."
-- "Activate collision detection."
-- "Can you enable obstacle detection?"
-- "Start the collision avoidance system."
-- "Please switch on collision detection."
-- "Enable the object detection feature."
+- "Please enable obstacle and hazard detection."
+- "Turn on the collision prevention system now."
+- "Start the object and movement detection feature."
+- "Activate sensors to detect anything I might bump into."
+- "Can you switch on the obstacle warning system?"
+- "Enable collision alerts and monitoring, please."
+
+### `other`
+Example prompts:
+- "Play some background music."
+- "What’s the weather forecast for today?"
+- "Remind me about my 5 PM meeting."
+- "Call my mother’s phone."
+- "Open the phone’s camera app."
+- "Show directions to the nearest grocery store."
 
 ---
 
@@ -85,7 +93,7 @@ Predicted Intent: read_text (confidence=0.53)
 
 1) Input text is embedded using SBERT (`all-distilroberta-v1`).
 2) Each intent category has a pre-computed mean embedding from its example templates.
-3)  The tool computes cosine similarity between the input and each intent category.
+3) The tool computes cosine similarity between the input and each intent category.
 4) The most similar intent is returned along with a confidence score.
 
 ## Performance Metrics
