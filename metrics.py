@@ -517,7 +517,8 @@ demand_templates = {
             "What does the writing say on that sign?",
             "Tell me exactly what the label says.",
             "Could you read the message displayed in front of me?",
-            "What are the words written on this surface?"
+            "What are the words written on this surface?",
+            "Read this text for me, please."
         ],
         "describe_scene": [
             "Can you describe what's happening around me?",
@@ -525,7 +526,8 @@ demand_templates = {
             "Give me a detailed description of the scene.",
             "Describe the setting and objects nearby.",
             "Tell me what the surroundings look like.",
-            "What's visible in the current environment?"
+            "What's visible in the current environment?",
+            "What does this room look like?"
         ],
         "activate_detection_collision": [
             "Please enable obstacle and hazard detection.",
@@ -553,13 +555,13 @@ demand_templates = {
 }
 
 MODELS = [
-    "all-MiniLM-L6-v2",
-    "all-MiniLM-L12-v2",
+    #"all-MiniLM-L6-v2",
+    #"all-MiniLM-L12-v2",
     "all-mpnet-base-v2",
     "all-distilroberta-v1",
     "all-roberta-large-v1",
-    "paraphrase-multilingual-MiniLM-L12-v2",
-    "paraphrase-multilingual-mpnet-base-v2"
+    #"paraphrase-multilingual-MiniLM-L12-v2",
+    #"paraphrase-multilingual-mpnet-base-v2"
 ]
 
 def build_classifier(model_name):
@@ -576,10 +578,8 @@ def build_classifier(model_name):
         top_intent, top_score = sorted_sims[0]
         second_score = sorted_sims[1][1] if len(sorted_sims) > 1 else 0.0
         # Check if difference is sufficient and minimum score is met
-        '''
         if top_score - second_score <= 0.05 or top_score < 0.15:
             return "other", top_score - second_score
-        '''
         return top_intent, top_score
 
     return classify
@@ -589,25 +589,39 @@ def evaluate_classifier(classify_func, dataset):
     total = 0
     times = []
     incorrect = []
-    category_stats = defaultdict(lambda: {"correct": 0, "total": 0, "errors": 0, "time": [], "misclassified_to": defaultdict(int)})
+    category_stats = defaultdict(lambda: {
+        "correct": 0,
+        "total": 0,
+        "errors": 0,
+        "time": [],
+        "misclassified_to": defaultdict(int),
+        "misclassified_from": defaultdict(int),
+        "misclassified_examples": []
+    })
 
-    for intent, examples in dataset.items():
+    for true_intent, examples in dataset.items():
         for text in examples:
             start = time.time()
             pred_intent, confidence = classify_func(text)
             end = time.time()
             elapsed = end - start
 
-            category_stats[intent]["total"] += 1
-            category_stats[intent]["time"].append(elapsed)
+            category_stats[true_intent]["total"] += 1
+            category_stats[true_intent]["time"].append(elapsed)
 
-            if pred_intent == intent:
+            if pred_intent == true_intent:
                 correct += 1
-                category_stats[intent]["correct"] += 1
+                category_stats[true_intent]["correct"] += 1
             else:
-                incorrect.append((text, intent, pred_intent, confidence))
-                category_stats[intent]["errors"] += 1
-                category_stats[intent]["misclassified_to"][pred_intent] += 1
+                incorrect.append((text, true_intent, pred_intent, confidence))
+                category_stats[true_intent]["errors"] += 1
+                category_stats[true_intent]["misclassified_to"][pred_intent] += 1
+                category_stats[pred_intent]["misclassified_from"][true_intent] += 1
+                category_stats[true_intent]["misclassified_examples"].append({
+                    "text": text,
+                    "predicted": pred_intent,
+                    "confidence": confidence
+                })
 
             total += 1
             times.append(elapsed)
@@ -634,16 +648,26 @@ if __name__ == "__main__":
             total_cat = values["total"]
             correct_cat = values["correct"]
             errors_cat = values["errors"]
-            avg_cat_time = sum(values["time"]) / total_cat * 1000  # ms
+            avg_cat_time = sum(values["time"]) / total_cat * 1000 if total_cat > 0 else 0.0
             cat_accuracy = correct_cat / total_cat * 100 if total_cat > 0 else 0.0
 
             misclass_to_str = ", ".join(
                 f"{target}: {count}" for target, count in values["misclassified_to"].items()
-            )
-            if not misclass_to_str:
-                misclass_to_str = "None"
+            ) if values["misclassified_to"] else "None"
 
-            print(f"  {cat:30s} | Accuracy: {cat_accuracy:5.2f}% | Errors: {errors_cat:3d} | Avg Time: {avg_cat_time:6.2f} ms | Misclassified to: {misclass_to_str}")
+            misclass_from_str = ", ".join(
+                f"{source}: {count}" for source, count in values["misclassified_from"].items()
+            ) if values["misclassified_from"] else "None"
+
+            print(f"  {cat:30s} | Accuracy: {cat_accuracy:5.2f}% | Errors: {errors_cat:3d} | Avg Time: {avg_cat_time:6.2f} ms")
+            print(f"      Misclassified to  : {misclass_to_str}")
+            print(f"      Misclassified from: {misclass_from_str}")
+
+            # Print each example that was misclassified
+            if values["misclassified_examples"]:
+                print(f"      Misclassified examples:")
+                for ex in values["misclassified_examples"]:
+                    print(f"        - \"{ex['text']}\" -> Predicted: {ex['predicted']} (Confidence: {ex['confidence']:.2f})")
 
         results.append((model_name, accuracy, avg_time, errors, stats))
 
