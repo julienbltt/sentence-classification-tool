@@ -169,3 +169,7 @@ The classifier demonstrates high accuracy with intelligent ambiguity handling, m
 - **Memory Management**: Call `cleanup()` when disposing of classifier instances
 - **Error Handling**: All methods include comprehensive exception handling
 - **Logging**: Built-in status messages with emoji indicators for easy debugging
+
+---
+
+Further information and metrics (made with a Snapdragon X Plus chip) can be find [here](https://github.com/julienbltt/commpanion-blind/issues/1).
